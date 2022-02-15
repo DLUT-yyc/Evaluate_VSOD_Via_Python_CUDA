@@ -46,7 +46,7 @@ class Eval_thread():
                     e_score += self._eval_e(pred, gt, 256)
                     # S-Measure
                     y = gt.mean()
-                    if y == 0:
+                    if y < 1e-4:
                         x = pred.mean()
                         Q = 1.0 - x
                     elif y == 1:
@@ -57,7 +57,7 @@ class Eval_thread():
                         gt[gt < 0.5] = 0
                         Q = alpha * self._S_object(pred, gt) + (1 - alpha) * self._S_region(pred, gt)
                         if Q.item() < 0:
-                            Q = torch.FloatTensor([0.0])
+                            Q = torch.FloatTensor([0.0])[0].cuda()
                     assert Q==Q,'Q is NaN'
                     sum_Q += Q
 
